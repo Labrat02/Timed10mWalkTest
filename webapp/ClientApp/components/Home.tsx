@@ -1,29 +1,57 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import { Route } from 'react-router-dom';
+import { HomeViewModel, IHomeProps } from '../models/index';
 
-export class Home extends React.Component<RouteComponentProps<{}>, {}> {
+export class Home extends React.Component<RouteComponentProps<IHomeProps>, HomeViewModel> {
+    constructor(props: any){
+        super(props);
+        
+        this.state = new HomeViewModel({patientId: 12345});
+    }
+    startTestWizard(){
+        // Show Wizard Start Page
+        this.props.history.push('/wizard');
+    }
+
     public render() {
         return <div>
-            <h1>Hello, world!</h1>
-            <p>Welcome to your new single-page application, built with:</p>
-            <ul>
-                <li><a href='https://get.asp.net/'>ASP.NET Core</a> and <a href='https://msdn.microsoft.com/en-us/library/67ef8sbd.aspx'>C#</a> for cross-platform server-side code</li>
-                <li><a href='https://facebook.github.io/react/'>React</a> and <a href='http://www.typescriptlang.org/'>TypeScript</a> for client-side code</li>
-                <li><a href='https://webpack.github.io/'>Webpack</a> for building and bundling client-side resources</li>
-                <li><a href='http://getbootstrap.com/'>Bootstrap</a> for layout and styling</li>
-            </ul>
-            <p>To help you get started, we've also set up:</p>
-            <ul>
-                <li><strong>Client-side navigation</strong>. For example, click <em>Counter</em> then <em>Back</em> to return here.</li>
-                <li><strong>Webpack dev middleware</strong>. In development mode, there's no need to run the <code>webpack</code> build tool. Your client-side resources are dynamically built on demand. Updates are available as soon as you modify any file.</li>
-                <li><strong>Hot module replacement</strong>. In development mode, you don't even need to reload the page after making most changes. Within seconds of saving changes to files, rebuilt React components will be injected directly into your running application, preserving its live state.</li>
-                <li><strong>Efficient production builds</strong>. In production mode, development-time features are disabled, and the <code>webpack</code> build tool produces minified static CSS and JavaScript files.</li>
-            </ul>
-            <h4>Going further</h4>
-            <p>
-                For larger applications, or for server-side prerendering (i.e., for <em>isomorphic</em> or <em>universal</em> applications), you should consider using a Flux/Redux-like architecture.
-                You can generate an ASP.NET Core application with React and Redux using <code>dotnet new reactredux</code> instead of using this template.
-            </p>
-        </div>;
+            <div className="well">
+                <button className="btn btn-primary" onClick={ () => { this.startTestWizard() } }>New Test</button>
+                <button className="btn btn-primary" onClick={ () => { this.startTestWizard() } }>New Test Wizard</button>
+            </div>
+
+            <h4>Test History</h4>
+            <table className="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Test Date</th>
+                        <th>Trials Completed</th>
+                        <th>Avg Vel</th>
+                        <th>&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1/28/2018</td>
+                        <td>6</td>
+                        <td>4 m/s</td>
+                        <td>Edit / View Result</td>
+                    </tr>
+                    <tr>
+                        <td>1/26/2017</td>
+                        <td>6</td>
+                        <td>4 m/s</td>
+                        <td>Edit / View Result</td>
+                    </tr>
+                    <tr>
+                        <td>1/24/2016</td>
+                        <td>6</td>
+                        <td>4 m/s</td>
+                        <td>Edit / View Result</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     }
 }
