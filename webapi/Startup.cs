@@ -29,15 +29,14 @@ namespace webapi
         {
             services.AddMvc();
 
-// For test purposes - 
-// TODO: refactor this to use ENV variable or secret config.
-#if DEBUG
-    var connectionString = @"mongodb://localhost:27017";
-#else
-    var connectionString = @"mongodb://mongo_db:27017";
-#endif
-            
+            var connectionString = @"mongodb://mongo_db:27017";
             var databaseName = @"mongoDev";
+            
+            // For test purposes - 
+            // TODO: refactor this to use ENV variable or secret config.
+            if (System.Net.Dns.GetHostName().Contains("LAPTOP"))
+                connectionString = @"mongodb://localhost:27017";
+            
             services.AddSingleton<IMongoStore>(sp => {
                 var mongoStore = new MongoStore(connectionString, databaseName);
                 mongoStore.PatientId = "123";
