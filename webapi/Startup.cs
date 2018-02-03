@@ -28,8 +28,15 @@ namespace webapi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+// For test purposes - 
+// TODO: refactor this to use ENV variable or secret config.
+#if DEBUG
+    var connectionString = @"mongodb://localhost:27017";
+#else
+    var connectionString = @"mongodb://mongo_db:27017";
+#endif
             
-            var connectionString = @"mongodb://localhost:27017";
             var databaseName = @"mongoDev";
             services.AddSingleton<IMongoStore>(sp => {
                 var mongoStore = new MongoStore(connectionString, databaseName);

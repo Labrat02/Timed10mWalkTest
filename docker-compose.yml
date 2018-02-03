@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongo_db:
+    image: mongo
+    ports: 
+      - "27017:27017"
+    volumes: 
+      - mongo-debug-data:/data/db
+  # nginx:
+  webapi:
+    build: ./
+    dockerfile: webapi.Dockerfile
+    image: labrat/walktestapi:latest
+    volumes:
+      - .:/myapp
+    ports:
+      - "5050:5050"
+    depends_on:
+      - mongo_db
+  webapp:
+    build: ./webapp/
+    image: labrat/walktestweb:latest
+    volumes:
+      - .:/myapp
+    ports:
+      - "5000:5000"
+    depends_on:
+      - webapi
+volumes: 
+  mongo-debug-data:
