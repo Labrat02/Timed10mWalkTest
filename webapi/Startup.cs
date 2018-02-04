@@ -28,6 +28,7 @@ namespace webapi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddCors();
 
             var connectionString = @"mongodb://mongo_db:27017";
             var databaseName = @"mongoDev";
