@@ -4,11 +4,13 @@ using MongoDB.Driver;
 
 namespace DataStore
 {
-    public interface IMongoStore
+    public interface IMongoDBContext
     {
         MongoClient Connect();
         IMongoDatabase GetDatabase();
         IMongoCollection<T> GetCollection<T>(string collection);
+
+        IMongoCollection<TimedTest> TimedTests {get;}
 
         void LoadData(string inputFileName, string targetCollection);
 

@@ -9,11 +9,11 @@ namespace DataStore
 {
     public static class MockDataLoader
     {
-        public static void LoadJunk(IMongoDatabase db, string collection)
+        public static void LoadJunk(IMongoDBContext dbContext)
         {
-            
+            var db = dbContext.GetDatabase();
             try{
-                db.DropCollection(collection);
+                db.DropCollection("TimedTests" + dbContext.PatientId);
             }
             finally{
                 
@@ -64,7 +64,7 @@ namespace DataStore
 
             try
             {
-                db.GetCollection<TimedTest>(collection).InsertMany(timedTests);
+                dbContext.TimedTests.InsertMany(timedTests);
             }
             catch(Exception ex)
             {
@@ -74,11 +74,3 @@ namespace DataStore
         }
     }
 }
-
-
-// { "_id" : ObjectId("5513306a2dfd32ffd580e323"), "testDate" : "2017-01-25T22:02:18Z", "patientId" : "1", "testNotes" : "Test 1", "trials" : [ {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:00Z", "trialResultSeconds" : 12.6}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:01Z", "trialResultSeconds" : 11.4}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:02Z", "trialResultSeconds" : 12.1}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:03Z", "trialResultSeconds" : 9.6}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:04Z", "trialResultSeconds" : 8.2}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:05Z", "trialResultSeconds" : 6.6}] }
-// { "_id" : ObjectId("5513306a2dfd32ffd580e327"), "testDate" : "2017-02-01T22:02:18Z", "patientId" : "1", "testNotes" : "Test 2", "trials" : [ {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:00Z", "trialResultSeconds" : 12.6}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:01Z", "trialResultSeconds" : 11.4}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:02Z", "trialResultSeconds" : 12.1}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:03Z", "trialResultSeconds" : 9.6}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:04Z", "trialResultSeconds" : 8.2}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:05Z", "trialResultSeconds" : 6.6}] }
-// { "_id" : ObjectId("5513306a2dfd32ffd580e328"), "testDate" : "2017-02-01T22:02:18Z", "patientId" : "2", "testNotes" : "Test 3", "trials" : [ {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:00Z", "trialResultSeconds" : 12.6}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:01Z", "trialResultSeconds" : 11.4}, {"trialType" : "SSWS", "trialDate" : "2017-01-01T12:12:02Z", "trialResultSeconds" : 12.1}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:03Z", "trialResultSeconds" : 9.6}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:04Z", "trialResultSeconds" : 8.2}, {"trialType" : "FPWS", "trialDate" : "2017-01-01T12:12:05Z", "trialResultSeconds" : 6.6}] }
-// { "_id" : ObjectId("5513306c2dfd32ffd580e324"), "x" : 2.0 }
-// { "_id" : ObjectId("5513306e2dfd32ffd580e325"), "x" : 3.0 }
-// { "_id" : ObjectId("551330712dfd32ffd580e326"), "x" : 4.0 }

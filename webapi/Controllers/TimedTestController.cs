@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DataStore;
 using DataStore.EntityModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using webapi.Helpers;
 
 namespace webapi.Controllers
 {
+    [EnableCors("CorsPolicy")] 
     [Route("api/[controller]")]
     public class TimedTestController : Controller
     {
         TimedTestHelper _helper;
-        public TimedTestController(IMongoStore mongoStore)
+        public TimedTestController(IMongoDBContext dbContext)
         {
-            _helper = new TimedTestHelper(mongoStore);
+            _helper = new TimedTestHelper(dbContext);
         }
         // GET api/values
         [HttpGet]
@@ -29,8 +27,7 @@ namespace webapi.Controllers
         [HttpGet("{id}")]
         public TimedTest Get(string id)
         {
-            var objectId = new ObjectId(id);
-            return _helper.GetTestById(objectId); //new ObjectId("5513306a2dfd32ffd580e323")
+            return _helper.GetTestById(id);
         }
 
         // POST api/values

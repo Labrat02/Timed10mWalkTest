@@ -8,22 +8,25 @@ services:
       - mongo-debug-data:/data/db
   # nginx:
   webapi:
-    build: ./
-    dockerfile: webapi.Dockerfile
+    build:
+      context: .
+      dockerfile: webapi.Dockerfile
+      args: 
+        buildno: 1
     image: labrat/walktestapi:latest
     volumes:
       - .:/myapp
     ports:
-      - "5050:5050"
+      - "5050:80"
     depends_on:
       - mongo_db
   webapp:
-    build: ./webapp/
+    build: ./webapp
     image: labrat/walktestweb:latest
     volumes:
       - .:/myapp
     ports:
-      - "5000:5000"
+      - "5000:80"
     depends_on:
       - webapi
 volumes: 

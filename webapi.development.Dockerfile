@@ -6,7 +6,7 @@ LABEL author="Collin Yeadon<collin@yeadongroup.com>"
 COPY ./DataStore ./DataStore
 
 # caches restore result by copying csproj file separately
-WORKDIR /webapi
+WORKDIR /app
 COPY ./webapi/*.csproj ./
 RUN dotnet restore
 

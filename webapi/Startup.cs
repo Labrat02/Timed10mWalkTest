@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using DataStore;
-using MongoDB.Driver;
-using MongoDB.Bson;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace webapi
 {
@@ -27,8 +21,21 @@ namespace webapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+        
+            // Add Cors
+            services.AddCors(o => 
+            
+                o.AddPolicy("CorsPolicy", builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials())
+            );
+
             services.AddMvc();
-            services.AddCors();
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("CorsPolicy"));
+            });
 
             var connectionString = @"mongodb://mongo_db:27017";
             var databaseName = @"mongoDev";
@@ -38,11 +45,11 @@ namespace webapi
             if (System.Net.Dns.GetHostName().Contains("LAPTOP"))
                 connectionString = @"mongodb://localhost:27017";
             
-            services.AddSingleton<IMongoStore>(sp => {
-                var mongoStore = new MongoStore(connectionString, databaseName);
-                mongoStore.PatientId = "123";
-                MockDataLoader.LoadJunk(mongoStore.GetDatabase(), "mockData");
-                return mongoStore;
+            services.AddSingleton<IMongoDBContext>(sp => {
+                var dbContext = new MongoDBContext(connectionString, databaseName);
+                dbContext.PatientId = "123";
+                MockDataLoader.LoadJunk(dbContext);
+                return dbContext;
             });
 
             // Register the Swagger generator, defining one or more Swagger documents
@@ -55,6 +62,9 @@ namespace webapi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         { 
+            // Enable CORS
+            app.UseCors("CorsPolicy");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -70,7 +80,6 @@ namespace webapi
             });
 
             app.UseMvc();
-            
         }
     }
 }

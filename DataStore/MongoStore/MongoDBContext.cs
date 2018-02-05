@@ -4,6 +4,7 @@
 //
 using System;
 using System.IO;
+using DataStore.EntityModels;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
@@ -11,41 +12,38 @@ using MongoDB.Driver;
 
 namespace DataStore
 {
-    public class MongoStore : IMongoStore
+    public class MongoDBContext : IMongoDBContext
     {
         private MongoClient _client = null;
         private IMongoDatabase _db = null;
         private string _connectionString;
+        private string _databaseName;
         public string PatientId { get; set; }
 
-        //public MongoStore() => MongoStoreOptions();
-        public MongoStore(string connectionString, string databaseName) => MongoStoreOptions(connectionString, databaseName);
-        //private void MongoStoreOptions() => MongoStoreOptions(defaultConnectionString, defaultDatabaseName);
-        private void MongoStoreOptions(string connectionString, string databaseName)
+        public MongoDBContext(string connectionString, string databaseName) => MongoDBContextOptions(connectionString, databaseName);
+        private void MongoDBContextOptions(string connectionString, string databaseName)
         {
             _connectionString = connectionString;
             _databaseName = databaseName;
-            _client = this.Connect();
-            _db = _client.GetDatabase(_databaseName);
-            
-            //this.LoadData(@"./mockdata/mockdata.json", "mockData");
+            try
+            {
+                _client = this.Connect();
+                _db = _client.GetDatabase(_databaseName);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine($"MongoDBContext Error: {ex.Message}");
+                throw ex;
+            }
+
         }
 
-        public string ConnectionString
-        {
-            get { return _connectionString;}
-            set { _connectionString = value;}
-        }
-        private string _databaseName;
-        public string DatabaseName
-        {
-            get { return _databaseName;}
-            set { _databaseName = value;}
-        }
         public MongoClient Connect() => new MongoClient(_connectionString);
         public IMongoDatabase GetDatabase() => _client.GetDatabase(_databaseName);
         public IMongoCollection<T> GetCollection<T>(string collection) => _db.GetCollection<T>(collection);
 
+        // Expose collections explicitly
+        public IMongoCollection<TimedTest> TimedTests { get => _db.GetCollection<TimedTest>("TimedTests" + PatientId); }
 
         public void LoadData(string inputFileName, string targetCollection ){
             if (_db == null) return;
