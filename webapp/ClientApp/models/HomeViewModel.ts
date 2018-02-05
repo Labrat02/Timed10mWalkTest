@@ -2,12 +2,13 @@ import { TestEntity } from "ClientApp/models/TestEntity";
 
 export interface IHomeProps {   
     patientId: number;
+    testHistory: TestEntity[];
 }
 export class HomeViewModel implements IHomeProps {
     constructor(props: IHomeProps){
         this.patientId = props.patientId;
-        //this.data = new TestEntity();
+        this.testHistory = props.testHistory;
     }
     patientId: number;
-    data: HomeViewModel;
+    testHistory: TestEntity[];
 }

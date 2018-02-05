@@ -13,10 +13,10 @@ export class Layout extends React.Component<LayoutProps, {}> {
     public ReturnHome() {
         if (window.location.pathname == '/') return null;
         // if test is running & url not home
-        return (<div className="panel panel-default">
-            <div className="panel-body">
+        return (<div className="card card-default mb-3">
+            <div className="card-body">
                 <NavLink to={ '/' } exact activeClassName='active'>
-                    <span className='glyphicon glyphicon-circle-arrow-left'></span> Return Home
+                    <span className='fa fa-arrow-circle-left'></span> Return Home
                 </NavLink>
             </div>
         </div>);

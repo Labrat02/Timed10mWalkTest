@@ -1,11 +1,13 @@
 export interface ITrialEntity {
-    trialId: number;
+    id: number;
+    trialType: string;
     recordedTimeSeconds: number;
-    practitionerNotes: string;
+    trialNotes: string;
 }
 
 export class TrialEntity implements ITrialEntity {
-    trialId: number;
+    id: number;
+    trialType: string;
     recordedTimeSeconds: number;
-    practitionerNotes: string;
+    trialNotes: string;
 }

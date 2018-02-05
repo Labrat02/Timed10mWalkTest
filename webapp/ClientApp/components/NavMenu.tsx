@@ -19,7 +19,7 @@ export class NavMenu extends React.Component<{}, {}> {
                     <ul className='nav navbar-nav'>
                         <li>
                             <NavLink to={ '/' } exact activeClassName='active'>
-                                <span className='glyphicon glyphicon-home'></span> Home
+                                <span className='fa fa-home'></span> Home
                             </NavLink>
                         </li>
                     </ul>
