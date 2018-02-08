@@ -32,23 +32,23 @@ namespace webapi.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]TimedTest value)
+        public string Post([FromBody]TimedTest timedTest)
         {
-            _helper.InsertTimedTest(value);
+            return _helper.InsertTimedTest(timedTest);
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(string id, [FromBody]TimedTest value)
+        public void Put(string id, [FromBody]TimedTest timedTest)
         {
-            _helper.UpdateTimedTest(id, value);
+            _helper.UpdateTimedTest(id, timedTest);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(string id)
         {
-            //_helper.DeleteDocument(id);
+            _helper.DeleteDocument(id);
         }
     }
 }

@@ -1,87 +1,191 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { Route, Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import { TimedTestService } from '../services/TimedTestService';
+import { TestEntity, ITestEntity } from '../models/TestEntity';
+import { TrialEntity, ITrialEntity } from '../models/TrialEntity';
+import { ITestFormProps, TestFormViewModel } from '../models/TestFormViewModel';
+import * as moment from 'moment';
+import { Moment } from 'moment';
 
-export class TestForm extends React.Component<RouteComponentProps<any>, any> {
+export class TestForm extends React.Component<RouteComponentProps<ITestFormProps>, TestFormViewModel> {
+    ttService: TimedTestService;
     constructor(props: any){
         super(props);
         
-        //this.state = new HomeViewModel({patientId: 12345});
-        this.state = {
-            currentDate: new Date()
+        this.ttService = new TimedTestService();
+
+        let testEntity: ITestEntity = {
+            id: null,
+            idString:'', 
+            testDate: new Date(),
+            trials: this.getEmptyTrials(),
+            testNotes: '',
+        };
+
+        this.state = new TestFormViewModel({
+            id:  testEntity.idString,
+            testEntity: testEntity,
+            patientId: '',
+            testDate: moment(testEntity.testDate, 'DD/MM/YYYY')
+        });
+    }
+
+    componentWillMount(){
+        let params = this.props.match.params;
+        if (params && params.id) {
+            this.ttService.getTimedTest(params.id, (t : TestEntity) => {
+                this.setState({testEntity: t, testDate: moment(t.testDate)});
+            });
         }
     }
-    startTestWizard(){
-        // Show Wizard Start Page
-        this.props.history.push('/wizard');
+
+    labels = (labelType : string) => {
+        let labelText = '';
+        switch (labelType) {
+            case "SSWS":
+                labelText = 'Self-Selected Trials';
+                break;
+            case "FPWS":
+                labelText = 'Fastest Trials';
+                break;
+            case "newForm":
+                labelText = 'New Test';
+                break;
+            case "editForm":
+                labelText = 'Edt Test';
+                break;
+        
+            default:
+                break;
+        }
+        return labelText;
+    }
+
+    getEmptyTrials() : Array<ITrialEntity>{
+        let todaysDate = new Date();
+        return [
+            {trialDate: todaysDate, trialType: 'SSWS', trialResultSeconds: '', trialNotes: ''},
+            {trialDate: todaysDate, trialType: 'SSWS', trialResultSeconds: '', trialNotes: ''},
+            {trialDate: todaysDate, trialType: 'SSWS', trialResultSeconds: '', trialNotes: ''},
+            {trialDate: todaysDate, trialType: 'FPWS', trialResultSeconds: '', trialNotes: ''},
+            {trialDate: todaysDate, trialType: 'FPWS', trialResultSeconds: '', trialNotes: ''},
+            {trialDate: todaysDate, trialType: 'FPWS', trialResultSeconds: '', trialNotes: ''},
+            
+        ];
+    }
+    handleTrialTimeChange = (indx: any) => (e: any) => {
+        let timedTest = this.state.testEntity;
+        timedTest.trials[indx].trialResultSeconds = e.target.value;
+        this.setState({testEntity: timedTest});
+    }
+    handleTrialTimeBlur = (indx: any) => (e: any) => {
+        let timedTest = this.state.testEntity;
+        timedTest.trials[indx].trialResultSeconds = parseFloat(e.target.value).toFixed(2);
+        this.setState({testEntity: timedTest});
+    }
+    updateTestNote = (e: any) => {
+        let timedTest = this.state.testEntity;
+        timedTest.testNotes = e.target.value;
+        this.setState({testEntity: timedTest});
+    }
+    handleTestDateChange = (date: Moment) => {
+        let timedTest = this.state.testEntity;
+        timedTest.testDate = date.toDate();
+        this.setState({
+          testDate: date
+        });
+      }
+
+    saveChanges = (e: any) => {
+        let timedTest = this.state.testEntity;
+        if (timedTest.idString === "") {
+            this.ttService.createTimedTest(timedTest, (newId : string) => {
+                console.log('newId: ' + newId);
+                this.props.history.push('/result/' + newId);
+                
+                //redirect to results
+            });
+        } else {
+            this.ttService.updateTimedTest(timedTest, () => {
+                this.props.history.push('/result/' + timedTest.idString);
+            });
+        }
+        e.preventDefault();
     }
 
     public render() {
-        return <div>
-            <h4>Test Form</h4>
-            <p>...</p>
-            <form className="container-fluid">
-                <div className="row">
-                    <div className="col">
-                        
-                        <div className="card">
-                            <div className="card-header">Self-Selected Trials</div>
-                            <div className="card-body">
 
-                                <div className="form-group">
-                                    <label htmlFor="t1">Trial #1:</label>
-                                    <input type="text" className="form-control" id="t1" /> 
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="t2">Trial #2:</label>
-                                    <input type="text" className="form-control" id="t2" /> 
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="t3">Trial #3:</label>
-                                    <input type="text" className="form-control" id="t3" />
-                                </div>
-
-                            </div>
-                        </div>
-
+        var getTrialInputFields = (trialType: string) => {
+            return this.state.testEntity.trials.map((trial:TrialEntity, indx: number) => {
+                if (trial.trialType == trialType) return (
+                    <div key={ indx } className="form-group">
+                        <label htmlFor={ 't'+indx }>Trial #{(indx+1)}:</label>
+                        <input type="text" className="form-control" 
+                            onChange={ this.handleTrialTimeChange(indx) } 
+                            onBlur={this.handleTrialTimeBlur(indx)}
+                            value={ parseFloat(trial.trialResultSeconds) > 0 ? trial.trialResultSeconds : '' } 
+                            placeholder={ 'Time in seconds' } 
+                            id={ 't'+indx } 
+                            autoComplete="off"  /> 
                     </div>
-                    <div className="col">
-                    
-                        <div className="card">
-                            <div className="card-header">Fastest Possible Trials</div>
-                            <div className="card-body">
-                            
-                                <div className="form-group">
-                                    <label htmlFor="t4">Trial #1:</label>
-                                    <input type="text" className="form-control" id="t4" /> 
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="t5">Trial #2:</label>
-                                    <input type="text" className="form-control" id="t5" /> 
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="t6">Trial #3:</label>
-                                    <input type="text" className="form-control" id="t6" />
-                                </div>
-                                
-                            </div>
-                        </div>
-
+                );
+            })
+        };
+        var getTrialCard = (trialType: string) => {
+            if (this.state.testEntity.trials.length > 0)
+            return (
+                <div className="card">
+                    <div className="card-header">{ this.labels(trialType) }</div>
+                    <div className="card-body">
+                        { getTrialInputFields(trialType) }
                     </div>
                 </div>
-                <div className="row pt-3">
+
+            );
+        }
+
+        var getDateField = () => {
+            return (
+                <div className="container-fluid mb-3">
+                    <div className="row">
+                        <div className="mx-auto text-nowrap">
+                            <label htmlFor="testDate" className="pull-left pr-3">Date:</label>
+                            <DatePicker id="testDate" className="pull-left" selected={ this.state.testDate } onChange={ this.handleTestDateChange } />
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return (<div>
+            <h4>{ (this.state.testEntity.idString !== "") ? this.labels('editForm') : this.labels('newForm') }</h4>
+            
+            { getDateField() }
+            
+            <form className="container-fluid mb-3">
+                <div className="row mb-3">
+                    <div className="col">
+                        { getTrialCard('SSWS') }
+                    </div>
+                    <div className="col">
+                        { getTrialCard('FPWS') }
+                    </div>
+                </div>
+                <div className="row mb-3">
                     <div className="col form-group">
                         <label htmlFor="testNotes">Test Notes:</label><br />
-                        <textarea id="testNotes" className="form-control"></textarea>
+                        <textarea onChange={ this.updateTestNote } value={ this.state.testEntity.testNotes } className="form-control"></textarea>
                     </div>
                 </div>
-                <div className="row pt-3">
+                <div className="row mb-3">
                     <div className="col text-center">
-                        <Link to="/result/123" className="btn btn-primary">Save &amp; View Result</Link>
+                        <button onClick={ this.saveChanges } className="btn btn-primary">Save &amp; View Result</button>
                         <Link to="/" className="btn btn-secondary ml-3">Cancel</Link>
                     </div>
                 </div>
             </form>
-        </div>
+        </div>);
     }
 }

@@ -1,7 +1,18 @@
-/* html, body {
-    background-image: linear-gradient(0deg, rgb(200, 208, 177), #FFFFFF);
-    height: 100%;
-} */
+.text-nowrap {
+    white-space: nowrap;
+}
+
+.btnLinks {
+    white-space: nowrap;
+}
+.btnLinks a:link, .btnLinks a:visited {
+    text-decoration: none;
+    color: black;
+}
+.btnLinks a:hover, .btnLinks a:active {
+    color: blue;
+}
+
 .main-nav li .glyphicon {
     margin-right: 10px;
 }

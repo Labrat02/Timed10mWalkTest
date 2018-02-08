@@ -1,4 +1,4 @@
-import { TestEntity } from "ClientApp/models/TestEntity";
+import { TestEntity } from "./TestEntity";
 
 export interface IHomeProps {   
     patientId: number;

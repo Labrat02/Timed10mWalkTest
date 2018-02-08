@@ -10,8 +10,9 @@ namespace DataStore.EntityModels
     {
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string TrialType { get; set; }
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonRepresentation(MongoDB.Bson.BsonType.DateTime)]
         public DateTime TrialDate { get; set; }
+        [BsonRepresentation(MongoDB.Bson.BsonType.Double)]
         public Double TrialResultSeconds { get; set; } 
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string TrialNotes { get; set; }

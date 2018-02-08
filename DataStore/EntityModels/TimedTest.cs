@@ -9,7 +9,7 @@ namespace DataStore.EntityModels
     public class TimedTest : MongoEntity<ObjectId>
     {
         
-        [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        [BsonRepresentation(MongoDB.Bson.BsonType.DateTime)]
         public DateTime TestDate { get; set; }
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string PatientId { get; set; }
@@ -17,6 +17,7 @@ namespace DataStore.EntityModels
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public string TestNotes { get; set; }
 
+        
         public List<Trial> Trials { get; set; }
        
     }

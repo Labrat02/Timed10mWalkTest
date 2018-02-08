@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStore;
@@ -25,10 +26,12 @@ namespace webapi.Helpers
             return _dbContext.TimedTests.Find(filter: f => f.PatientId.Equals(_dbContext.PatientId)).ToList();
         }
 
-        public void InsertTimedTest(TimedTest value)
+        public string InsertTimedTest(TimedTest timedTest)
         {
-            if (value == null) return;
-            _dbContext.TimedTests.InsertOne(value);
+            if (timedTest == null) return "";
+            timedTest.PatientId = _dbContext.PatientId;
+            _dbContext.TimedTests.InsertOne(timedTest);
+            return timedTest.IdString;
         }
 
         public void UpdateTimedTest(string id, TimedTest value)
@@ -51,5 +54,11 @@ namespace webapi.Helpers
 
         }
 
+        public void DeleteDocument(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return;
+
+            _dbContext.TimedTests.DeleteOne(f => f.Id.Equals(new ObjectId(id)));
+        }
     }
 }
