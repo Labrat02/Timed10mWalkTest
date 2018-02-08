@@ -5,6 +5,7 @@ import { ITestResultProps, TestResultViewModel } from '../models/TestResultViewM
 import { ITestEntity } from '../models/TestEntity';
 import { TestEntityHelper } from '../models/TestEntityHelper';
 import { TimedTestService } from '../services/TimedTestService';
+import * as moment from 'moment';
 
 export class TestResult extends React.Component<RouteComponentProps<ITestResultProps>, TestResultViewModel> {
     ttService: TimedTestService;
@@ -57,7 +58,7 @@ export class TestResult extends React.Component<RouteComponentProps<ITestResultP
                 <div className="card-body">
                     
                     <pre className="border bg-light p-3" id="copyArea">
-                        Test Date: {this.state.testEntity.testDate.toDateString()}<br />
+                        Test Date: { moment(this.state.testEntity.testDate).format('MM/DD/YYYY') }<br />
                         <br />
                         Self-Selected Velocity:  Average time { this.helper.getPreferredWalkTime(this.state.testEntity.trials) } seconds.<br />
                         Fast Velocity:  Average time { this.helper.getFastestWalkTime(this.state.testEntity.trials) } seconds.<br />

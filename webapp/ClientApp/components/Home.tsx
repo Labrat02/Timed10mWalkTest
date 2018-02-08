@@ -86,7 +86,7 @@ export class Home extends React.Component<RouteComponentProps<IHomeProps>, HomeV
                             return (
         
                                 <tr key={ timedTest.idString } onClick={ () => { this.viewResult(timedTest.idString) } } >
-                                    <td>{ moment(timedTest.testDate).format() }</td>
+                                    <td>{ moment(timedTest.testDate).format('MM/DD/YYYY') }</td>
                                     <td>{ timedTest.trials.length }</td>
                                     <td>{ this.helper.getPreferredWalkTime(timedTest.trials) } sec.</td>
                                     <td>{ this.helper.getFastestWalkTime(timedTest.trials) } sec.</td>
