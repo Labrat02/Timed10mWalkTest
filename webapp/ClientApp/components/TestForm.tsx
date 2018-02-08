@@ -81,8 +81,14 @@ export class TestForm extends React.Component<RouteComponentProps<ITestFormProps
         this.setState({testEntity: timedTest});
     }
     handleTrialTimeBlur = (indx: any) => (e: any) => {
+        // restrict to 2 or less decimal places
+        let trimTimeStr = (t : string) => {
+            let decCount = t.indexOf('.') === -1 ? 0
+                : t.length - t.indexOf('.') - 1;
+            return decCount >= 2 ? parseFloat(t).toFixed(2) : parseFloat(t).toString();
+        }
         let timedTest = this.state.testEntity;
-        timedTest.trials[indx].trialResultSeconds = parseFloat(e.target.value).toFixed(2);
+        timedTest.trials[indx].trialResultSeconds = trimTimeStr(e.target.value);
         this.setState({testEntity: timedTest});
     }
     updateTestNote = (e: any) => {
@@ -152,7 +158,7 @@ export class TestForm extends React.Component<RouteComponentProps<ITestFormProps
                     <div className="row">
                         <div className="mx-auto text-nowrap">
                             <label htmlFor="testDate" className="pull-left pr-3">Date:</label>
-                            <DatePicker id="testDate" className="pull-left" selected={ this.state.testDate } onChange={ this.handleTestDateChange } />
+                            <DatePicker id="testDate" className="pull-left" value={ moment(this.state.testDate).format('MM/DD/YYYY') } selected={ this.state.testDate } onChange={ this.handleTestDateChange } />
                         </div>
                     </div>
                 </div>
