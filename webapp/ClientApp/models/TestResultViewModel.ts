@@ -4,12 +4,8 @@ import { TestEntityHelper } from "./TestEntityHelper";
 export interface ITestResultProps {
     id: string,
     testEntity: ITestEntity;
-
-    // averagePreferredVelocity: string;
-    // averageFastestVelocity: string;
-    // averagePreferredWalkTime: string;
-    // averageFastestWalkTime: string;
-
+    copied: boolean;
+    outputText: string;
 }
 export class TestResultViewModel implements ITestResultProps {
     testEntityHelper: TestEntityHelper;
@@ -19,4 +15,6 @@ export class TestResultViewModel implements ITestResultProps {
     }
     id: string;
     testEntity: ITestEntity;
+    outputText: string;
+    copied: boolean;
 }

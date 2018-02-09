@@ -24,6 +24,7 @@ module.exports = (env) => {
                 'moment/moment.js', 
                 'react-datepicker', 
                 'react-datepicker/dist/react-datepicker.css', 
+                'react-copy-to-clipboard',
                 'font-awesome/css/font-awesome.css', 
                 'event-source-polyfill', 
                 'isomorphic-fetch', 

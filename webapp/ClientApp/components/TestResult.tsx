@@ -6,6 +6,7 @@ import { ITestEntity } from '../models/TestEntity';
 import { TestEntityHelper } from '../models/TestEntityHelper';
 import { TimedTestService } from '../services/TimedTestService';
 import * as moment from 'moment';
+import * as CopyToClipboard from 'react-copy-to-clipboard';
 
 export class TestResult extends React.Component<RouteComponentProps<ITestResultProps>, TestResultViewModel> {
     ttService: TimedTestService;
@@ -26,6 +27,8 @@ export class TestResult extends React.Component<RouteComponentProps<ITestResultP
         this.state = new TestResultViewModel({
             id: '',
             testEntity: testEntity,
+            copied: false,
+            outputText: ''
         });
     }
     componentWillMount(){
@@ -33,6 +36,9 @@ export class TestResult extends React.Component<RouteComponentProps<ITestResultP
         if (params && params.id) {
             this.ttService.getTimedTest(params.id, (data: ITestEntity) => {
                 this.setState({testEntity: data});
+                
+                // update text output
+                this.setState({outputText: this.getTextOutput()});
             })
         }
     }
@@ -41,13 +47,10 @@ export class TestResult extends React.Component<RouteComponentProps<ITestResultP
         this.props.history.push('/');
     }
 
-    copyToClipboard = () => {
-        // let textField = document.getElementById('copyArea');
-        // if (textField) {
-        //     textField.select()
-        //     document.execCommand('copy')
-        // }
-      }
+    getTextOutput(): any {
+        let textElm = document.getElementById('copyArea');
+        return (textElm) ? textElm.innerText : '';
+    }
 
     public render() {
         return <div>
@@ -69,9 +72,12 @@ export class TestResult extends React.Component<RouteComponentProps<ITestResultP
                     </pre>
 
                     <div className="pull-right">
-                        <button className="btn" onClick={() => {}}>
-                            <span className="fa fa-copy"></span> Copy
-                        </button>
+                        <CopyToClipboard text={ this.state.outputText }
+                        onCopy={() => this.setState({copied: true})} >
+                            <button className="btn">
+                                <span className="fa fa-copy"></span> Copy
+                            </button>
+                        </CopyToClipboard>
                     </div>
                 </div>
             </div>

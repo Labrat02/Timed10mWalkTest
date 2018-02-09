@@ -34,8 +34,10 @@
   },
   "dependencies": {
     "@types/react-datepicker": "^1.1.0",
+    "@types/react-copy-to-clipboard": "^4.2.4",
     "font-awesome": "4.7.0",
     "moment": "^2.20.1",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-datepicker": "^1.1.0"
   }
 }

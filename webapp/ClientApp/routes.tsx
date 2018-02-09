@@ -13,5 +13,4 @@ export const routes = <Layout>
         <Route path='/new' component={ TestForm } />
         <Route path='/edit/:id' component={ TestForm } />
         <Route path='/result/:id' component={ TestResult } />
-        {/* <Route path='/fetchdata' component={ FetchData } /> */}
 </Layout>;
